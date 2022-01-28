@@ -1,4 +1,4 @@
-name: Stravaig PROJECT NAME HERE
+name: Stravaig Configuration SQL Server Provider
 on: 
   push:
     branches: 
@@ -38,9 +38,9 @@ jobs:
     name: Build, Test, and Release
     runs-on: ubuntu-latest
     env:
-      STRAVAIG_SOLUTION: src/XXXX.sln
-      STRAVAIG_TESTS: XXXX.Tests
-      STRAVAIG_PROJECT: XXXX
+      STRAVAIG_SOLUTION: src/Stravaig.Configuration.SqlServer.sln
+      STRAVAIG_TESTS: Stravaig.Configuration.SqlServer.Tests
+      STRAVAIG_PROJECT: Stravaig.Configuration.SqlServer
     
     steps:
       - name: Check out code
