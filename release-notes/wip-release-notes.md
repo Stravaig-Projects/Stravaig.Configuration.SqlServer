@@ -10,6 +10,8 @@ Date: ???
 
 ### Miscellaneous
 
+- #1: Initial set up
+
 ### Dependabot
 
 
