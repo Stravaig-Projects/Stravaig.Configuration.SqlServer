@@ -20,7 +20,7 @@ public class DataLoader : IDataLoader
         connection.Open();
         var cmd = new SqlCommand(sql, connection);
         using var reader = cmd.ExecuteReader();
-        while (reader.HasRows)
+        while (reader.Read())
         {
             var key = reader.GetString(keyColumnPosition);
             var value = reader.GetString(valueColumnPosition);

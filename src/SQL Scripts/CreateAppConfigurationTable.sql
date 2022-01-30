@@ -2,7 +2,7 @@
 
 CREATE SCHEMA Stravaig;
 GO
-CREATE TABLE Stravaig.AppConfiguation
+CREATE TABLE Stravaig.AppConfiguration
 (
     ConfigKey NVARCHAR(1024) PRIMARY KEY CLUSTERED,
     ConfigValue NVARCHAR(MAX)

@@ -26,6 +26,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Stravaig.Configuration.SqlS
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Stravaig.Configuration.SqlServer.Tests", "Stravaig.Configuration.SqlServer.Tests\Stravaig.Configuration.SqlServer.Tests.csproj", "{53C021C0-CFED-42BE-AD1D-DDAB4F44E83D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Example", "Example\Example.csproj", "{A5C751ED-34E2-49E2-8A49-E927D1B674EA}"
+EndProject
 Global
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -42,6 +44,10 @@ Global
 		{53C021C0-CFED-42BE-AD1D-DDAB4F44E83D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{53C021C0-CFED-42BE-AD1D-DDAB4F44E83D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{53C021C0-CFED-42BE-AD1D-DDAB4F44E83D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A5C751ED-34E2-49E2-8A49-E927D1B674EA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A5C751ED-34E2-49E2-8A49-E927D1B674EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A5C751ED-34E2-49E2-8A49-E927D1B674EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A5C751ED-34E2-49E2-8A49-E927D1B674EA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

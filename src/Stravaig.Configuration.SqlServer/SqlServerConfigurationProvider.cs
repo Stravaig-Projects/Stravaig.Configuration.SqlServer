@@ -1,11 +1,13 @@
 using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 
 namespace Stravaig.Configuration.SqlServer;
 
 public class SqlServerConfigurationProvider : ConfigurationProvider
 {
+    private Lazy<string> _toStringValue;
     private readonly SqlServerConfigurationSource _source;
     private readonly IDataLoader _dataLoader;
 
@@ -18,6 +20,7 @@ public class SqlServerConfigurationProvider : ConfigurationProvider
     {
         _source = source;
         _dataLoader = dataLoader;
+        _toStringValue = new Lazy<string>(BuildToStringValue);
     }
     
     public override void Load()
@@ -25,4 +28,23 @@ public class SqlServerConfigurationProvider : ConfigurationProvider
         var data = _dataLoader.RetrieveData(_source);
         Data = new Dictionary<string, string>(data, StringComparer.OrdinalIgnoreCase);
     }
+
+    public override string ToString()
+    {
+        return _toStringValue.Value;
+    }
+    
+    private string BuildToStringValue()
+    {
+        try
+        {
+            SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder(_source.ConnectionString);
+            return $"{nameof(SqlServerConfigurationProvider)} ([{builder.DataSource}].[{builder.InitialCatalog}].[{_source.SchemaName}].[{_source.TableName}])";
+        }
+        catch (Exception ex)
+        {
+            return $"{nameof(SqlServerConfigurationProvider)} ({ex.Message})";
+        }
+    }
+
 }
