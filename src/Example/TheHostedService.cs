@@ -17,19 +17,23 @@ public class TheHostedService : IHostedService, IDisposable
 {
     private readonly ILogger<TheHostedService> _logger;
     private readonly IConfigurationRoot _configRoot;
-    private readonly IOptions<MyFeatureConfiguration> _featureValues;
+    private readonly IOptionsMonitor<MyFeatureConfiguration> _featureValues;
     private readonly Timer _timer;
     
     public TheHostedService(
         ILogger<TheHostedService> logger,
         IConfigurationRoot configRoot,
-        IOptions<MyFeatureConfiguration> featureValues)
+        IOptionsMonitor<MyFeatureConfiguration> featureValues)
     {
         _logger = logger;
         _configRoot = configRoot;
         _featureValues = featureValues;
         _timer = new Timer(10000);
         _timer.Elapsed += TimerOnElapsed;
+        featureValues.OnChange((v, s) =>
+        {
+            Console.WriteLine($"Change detected. {s}");
+        });
     }
 
     private void TimerOnElapsed(object? sender, ElapsedEventArgs e)
@@ -38,7 +42,7 @@ public class TheHostedService : IHostedService, IDisposable
         {
             WriteIndented = true,
         };
-        string json = JsonSerializer.Serialize(_featureValues.Value, jsonOptions);
+        string json = JsonSerializer.Serialize(_featureValues.CurrentValue, jsonOptions);
         Console.Clear();
         _logger.LogInformation(
             "At {Time} the object looks like:\n{Json}",

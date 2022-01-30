@@ -7,9 +7,10 @@ namespace Stravaig.Configuration.SqlServer;
 
 public class SqlServerConfigurationProvider : ConfigurationProvider
 {
-    private Lazy<string> _toStringValue;
+    private readonly Lazy<string> _toStringValue;
     private readonly SqlServerConfigurationSource _source;
     private readonly IDataLoader _dataLoader;
+    private readonly ISqlServerConfigurationWatcher _watcher;
 
     public SqlServerConfigurationProvider(SqlServerConfigurationSource source)
         : this (source, new DataLoader())
@@ -21,12 +22,16 @@ public class SqlServerConfigurationProvider : ConfigurationProvider
         _source = source;
         _dataLoader = dataLoader;
         _toStringValue = new Lazy<string>(BuildToStringValue);
+        _watcher = source.RefreshInterval == TimeSpan.Zero
+            ? new NullSqlServerConfigurationWatcher()
+            : new SqlServerConfigurationWatcher(source.RefreshInterval, this);
     }
     
     public override void Load()
     {
         var data = _dataLoader.RetrieveData(_source);
         Data = new Dictionary<string, string>(data, StringComparer.OrdinalIgnoreCase);
+        _watcher.EnsureStarted();
     }
 
     public override string ToString()

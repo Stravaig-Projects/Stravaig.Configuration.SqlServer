@@ -15,6 +15,7 @@ public static class SqlServerConfigurationBuilderExtensions
         
         return builder.Add(new SqlServerConfigurationSource(
             options.ConnectionString ?? throw new InvalidOperationException("Cannot build a SQL Server Configuration Provider with a null connection string."),
+            TimeSpan.FromSeconds(options.RefreshSeconds),
             options.SchemaName,
             options.TableName));
     }

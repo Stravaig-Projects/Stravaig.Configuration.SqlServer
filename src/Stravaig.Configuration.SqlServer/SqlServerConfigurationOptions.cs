@@ -8,6 +8,8 @@ public class SqlServerConfigurationOptions
     public string? ConfigurationSection { get; set; }
     public string SchemaName { get; set; } = DefaultValues.SchemaName;
     public string TableName { get; set; } = DefaultValues.TableName;
+
+    public int RefreshSeconds { get; set; } = 0;
     
     public SqlServerConfigurationOptions FromExistingConfiguration(string configurationSection = DefaultValues.ConfigurationSection)
     {

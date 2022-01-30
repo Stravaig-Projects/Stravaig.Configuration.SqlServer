@@ -11,8 +11,9 @@ public class SqlServerConfigurationSource : IConfigurationSource
     public string ConnectionString { get; private set; }
     public string SchemaName { get; private set; }
     public string TableName { get; private set; }
+    public TimeSpan RefreshInterval { get; private set; }
 
-    public SqlServerConfigurationSource(string connectionString, string schemaName = "Stravaig", string tableName = "AppConfiguration")
+    public SqlServerConfigurationSource(string connectionString, TimeSpan? refreshInterval = null, string schemaName = "Stravaig", string tableName = "AppConfiguration")
     {
         ValidateConnectionString(connectionString);
         ValidateSchemaName(schemaName);
@@ -20,6 +21,7 @@ public class SqlServerConfigurationSource : IConfigurationSource
         ConnectionString = connectionString;
         SchemaName = schemaName;
         TableName = tableName;
+        RefreshInterval = refreshInterval ?? TimeSpan.Zero;
     }
 
     private void ValidateTableName(string tableName)
