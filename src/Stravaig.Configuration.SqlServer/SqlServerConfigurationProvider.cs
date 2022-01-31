@@ -33,6 +33,12 @@ public class SqlServerConfigurationProvider : ConfigurationProvider
         Data = new Dictionary<string, string>(data, StringComparer.OrdinalIgnoreCase);
         _watcher.EnsureStarted();
     }
+    
+    internal void Reload()
+    {
+        Load();
+        OnReload();
+    }
 
     public override string ToString()
     {
@@ -51,5 +57,4 @@ public class SqlServerConfigurationProvider : ConfigurationProvider
             return $"{nameof(SqlServerConfigurationProvider)} ({ex.Message})";
         }
     }
-
 }

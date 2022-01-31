@@ -20,7 +20,7 @@ public class SqlServerConfigurationWatcher : ISqlServerConfigurationWatcher
         try
         {
             Console.WriteLine("Timer elapsed");
-            _provider.Load();
+            _provider.Reload();
         }
         catch (Exception ex)
         {
