@@ -7,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Microsoft.FeatureManagement;
 using Stravaig.Configuration.Diagnostics.Logging;
 using Timer = System.Timers.Timer;
 
@@ -17,26 +18,29 @@ public class TheHostedService : IHostedService, IDisposable
 {
     private readonly ILogger<TheHostedService> _logger;
     private readonly IConfigurationRoot _configRoot;
+    private readonly IFeatureManager _featureManager;
     private readonly IOptionsMonitor<MyFeatureConfiguration> _featureValues;
     private readonly Timer _timer;
     
     public TheHostedService(
         ILogger<TheHostedService> logger,
         IConfigurationRoot configRoot,
+        IFeatureManager featureManager,
         IOptionsMonitor<MyFeatureConfiguration> featureValues)
     {
         _logger = logger;
         _configRoot = configRoot;
+        _featureManager = featureManager;
         _featureValues = featureValues;
         _timer = new Timer(10000);
         _timer.Elapsed += TimerOnElapsed;
         featureValues.OnChange((v, s) =>
         {
-            Console.WriteLine($"Change detected. {s}");
+            Console.WriteLine($"[{DateTime.Now:HH:mm:ss}] Change Detected. {s}");
         });
     }
 
-    private void TimerOnElapsed(object? sender, ElapsedEventArgs e)
+    private async void TimerOnElapsed(object? sender, ElapsedEventArgs e)
     {
         var jsonOptions = new JsonSerializerOptions()
         {
@@ -48,6 +52,11 @@ public class TheHostedService : IHostedService, IDisposable
             "At {Time} the object looks like:\n{Json}",
             e.SignalTime,
             json);
+        await foreach (string feature in _featureManager.GetFeatureNamesAsync())
+        {
+            var state = await _featureManager.IsEnabledAsync(feature);
+            _logger.LogInformation("{Feature} : {State}", feature, state);
+        }
         _logger.LogConfigurationValuesAsInformation(_configRoot.GetSection("MyConfiguration"));
     }
 

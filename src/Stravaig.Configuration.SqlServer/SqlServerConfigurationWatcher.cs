@@ -19,7 +19,7 @@ public class SqlServerConfigurationWatcher : ISqlServerConfigurationWatcher
     {
         try
         {
-            Console.WriteLine("Timer elapsed");
+            Console.WriteLine($"[{DateTime.Now:HH:mm:ss}] Polling the database.");
             _provider.Reload();
         }
         catch (Exception ex)

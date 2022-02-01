@@ -36,8 +36,27 @@ public class SqlServerConfigurationProvider : ConfigurationProvider
     
     internal void Reload()
     {
+        // Get existing data
+        var oldData = Data;
         Load();
-        OnReload();
+
+        if (DataDifferent(oldData, Data))
+            OnReload();
+    }
+
+    private bool DataDifferent(IDictionary<string, string> oldData, IDictionary<string, string> newData)
+    {
+        if (oldData.Count != newData.Count)
+            return true;
+        foreach (var oldKey in oldData.Keys)
+        {
+            if (!newData.ContainsKey(oldKey))
+                return true;
+            if (oldData[oldKey] != newData[oldKey])
+                return true;
+        }
+
+        return false;
     }
 
     public override string ToString()
