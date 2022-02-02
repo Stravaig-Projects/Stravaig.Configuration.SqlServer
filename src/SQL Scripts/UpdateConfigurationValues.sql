@@ -6,7 +6,7 @@ WHERE ConfigKey = 'MyConfiguration:SomeString'
 
 
 UPDATE Stravaig.AppConfiguration
-SET ConfigValue = 'true'
+SET ConfigValue = 'false'
 WHERE ConfigKey = 'FeatureManager:FeatureC'
 
 COMMIT TRANSACTION
