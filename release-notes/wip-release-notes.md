@@ -11,6 +11,7 @@ Date: ???
 ### Miscellaneous
 
 - #1: Initial set up
+- #2: Create the initial provider
 
 ### Dependabot
 
