@@ -34,7 +34,7 @@ public class TheHostedService : IHostedService, IDisposable
         _featureValues = featureValues;
         _timer = new Timer(10000);
         _timer.Elapsed += TimerOnElapsed;
-        featureValues.OnChange((v, s) =>
+        featureValues.OnChange((_, s) =>
         {
             Console.WriteLine($"[{DateTime.Now:HH:mm:ss}] Change Detected. {s}");
         });

@@ -1,6 +1,4 @@
 using System.Collections.Generic;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Hosting;
 using NUnit.Framework;
 using Shouldly;
 

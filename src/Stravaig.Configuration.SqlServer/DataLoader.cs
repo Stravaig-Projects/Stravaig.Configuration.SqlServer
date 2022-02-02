@@ -10,8 +10,8 @@ public interface IDataLoader
 public class DataLoader : IDataLoader
 {
     private const string RetrieveSqlTemplate = "SELECT [ConfigKey], [ConfigValue] FROM [{0}].[{1}]";
-    private const int keyColumnPosition = 0;
-    private const int valueColumnPosition = 1;
+    private const int KeyColumnPosition = 0;
+    private const int ValueColumnPosition = 1;
 
     public IEnumerable<KeyValuePair<string, string>> RetrieveData(SqlServerConfigurationSource source)
     {
@@ -22,8 +22,8 @@ public class DataLoader : IDataLoader
         using var reader = cmd.ExecuteReader();
         while (reader.Read())
         {
-            var key = reader.GetString(keyColumnPosition);
-            var value = reader.GetString(valueColumnPosition);
+            var key = reader.GetString(KeyColumnPosition);
+            var value = reader.GetString(ValueColumnPosition);
             yield return new KeyValuePair<string, string>(key, value);
         }
     }
