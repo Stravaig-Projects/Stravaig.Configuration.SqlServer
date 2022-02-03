@@ -210,7 +210,7 @@ public class SourceBuilderTests
         source.TableName.ShouldBe(tableName);
     }
 
-    private IConfigurationBuilder SetupConfig(Action<IConfigurationBuilder> configure = null)
+    private IConfigurationBuilder SetupConfig(Action<IConfigurationBuilder>? configure = null)
     {
         var builder = new ConfigurationBuilder();
         configure?.Invoke(builder);
