@@ -4,13 +4,21 @@
 
 Date: ???
 
-### Features
+### Bugs
 
-- #2: Create the initial provider
-- #10: Use a named connection string rather than supply it directly in the configuration source.
+### Features
 
 ### Miscellaneous
 
-- #1: Initial set up
+### Dependent Packages
+
+- .NET 5.0
+  - No changes
+- .NET Core 3.1
+  - No changes
+- General
+  - No changes
+
+---
 
 
