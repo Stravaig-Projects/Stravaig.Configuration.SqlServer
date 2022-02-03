@@ -10,6 +10,44 @@ namespace Stravaig.Configuration.SqlServer.Tests;
 public class SourceBuilderTests
 {
     [Test]
+    public void DeveloperIsBeingObtuseByDeliberatelyNullingSchema_ThrowsException()
+    {
+        // Arrange
+        const string theConnectionString = "Server=MyServer;Database=MyDatabase";
+        var options = (SqlServerConfigurationOptions opts) =>
+        {
+            opts.ConnectionString = theConnectionString;
+            opts.SchemaName = null!;
+        };
+        var configBuilder = SetupConfig();
+
+        // Act & Assert
+        var ex = Should.Throw<SqlServerConfigurationProviderException>(
+            () => SourceBuilder.BuildSource(configBuilder, options));
+
+        ex.Message.ShouldBe("The schema name is required to use SQL Server Configuration.");
+    }
+
+    [Test]
+    public void DeveloperIsBeingObtuseByDeliberatelyNullingTable_ThrowsException()
+    {
+        // Arrange
+        const string theConnectionString = "Server=MyServer;Database=MyDatabase";
+        var options = (SqlServerConfigurationOptions opts) =>
+        {
+            opts.ConnectionString = theConnectionString;
+            opts.TableName = null!;
+        };
+        var configBuilder = SetupConfig();
+
+        // Act & Assert
+        var ex = Should.Throw<SqlServerConfigurationProviderException>(
+            () => SourceBuilder.BuildSource(configBuilder, options));
+
+        ex.Message.ShouldBe("The table name is required to use SQL Server Configuration.");
+    }
+
+    [Test]
     public void SimplestOptions_HappyPath()
     {
         // Arrange
