@@ -11,7 +11,7 @@ public class SqlServerConfigurationOptions
     public string SchemaName { get; set; } = DefaultValues.SchemaName;
     public string TableName { get; set; } = DefaultValues.TableName;
 
-    public int RefreshSeconds { get; set; } = 0;
+    public int RefreshSeconds { get; set; } = DefaultValues.NoRefresh;
     
     public SqlServerConfigurationOptions FromExistingConfiguration(string configurationSection = DefaultValues.ConfigurationSection)
     {
