@@ -1,4 +1,5 @@
 using System;
+using System.Reflection;
 using Microsoft.Extensions.Configuration;
 
 namespace Stravaig.Configuration.SqlServer;

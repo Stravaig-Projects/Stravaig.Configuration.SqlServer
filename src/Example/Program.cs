@@ -7,12 +7,13 @@ using Microsoft.FeatureManagement;
 using Stravaig.Configuration.SqlServer;
 
 await Host.CreateDefaultBuilder(args)
-    .ConfigureAppConfiguration(builder =>
+    .ConfigureAppConfiguration((ctx, builder) =>
     {
         builder.AddUserSecrets<Program>();
         builder.AddSqlServer(opts =>
         {
-            opts.FromExistingConfiguration();
+            opts.FromExistingConfiguration()
+                .ExpectLogger();
         });
     })
     .ConfigureLogging(builder =>
@@ -23,6 +24,7 @@ await Host.CreateDefaultBuilder(args)
     .ConfigureServices((ctx, services) =>
     {
         IConfigurationRoot configRoot = (IConfigurationRoot) ctx.Configuration;
+        configRoot.AttachLoggerToSqlServerProvider(services.BuildServiceProvider().GetService<ILoggerFactory>());
         services.AddTransient<IHostedService, TheHostedService>();
         services.AddSingleton(configRoot);
         services.Configure<MyFeatureConfiguration>(configRoot.GetSection("MyConfiguration"));

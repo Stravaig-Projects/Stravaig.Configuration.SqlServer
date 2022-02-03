@@ -2,11 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Stravaig.Configuration.SqlServer;
 
 public class SqlServerConfigurationProvider : ConfigurationProvider
 {
+    private ILogger<SqlServerConfigurationProvider> _logger = NullLogger<SqlServerConfigurationProvider>.Instance;
     private readonly Lazy<string> _toStringValue;
     private readonly SqlServerConfigurationSource _source;
     private readonly IDataLoader _dataLoader;
@@ -29,8 +32,18 @@ public class SqlServerConfigurationProvider : ConfigurationProvider
     
     public override void Load()
     {
-        var data = _dataLoader.RetrieveData(_source);
-        Data = new Dictionary<string, string>(data, StringComparer.OrdinalIgnoreCase);
+        try
+        {
+            var data = _dataLoader.RetrieveData(_source);
+            Data = new Dictionary<string, string>(data, StringComparer.OrdinalIgnoreCase);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(
+                ex,
+                "Failed to get configuration information from the database. {ExceptionMessage}",
+                ex.Message);
+        }
         _watcher.EnsureStarted();
     }
     
@@ -75,5 +88,10 @@ public class SqlServerConfigurationProvider : ConfigurationProvider
         {
             return $"{nameof(SqlServerConfigurationProvider)} ({ex.Message})";
         }
+    }
+
+    internal void AttachLogger(ILoggerFactory loggerFactory)
+    {
+        _logger = loggerFactory.CreateLogger<SqlServerConfigurationProvider>();
     }
 }

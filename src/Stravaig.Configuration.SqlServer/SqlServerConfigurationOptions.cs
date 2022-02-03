@@ -4,6 +4,7 @@ namespace Stravaig.Configuration.SqlServer;
 
 public class SqlServerConfigurationOptions
 {
+    internal bool IsLoggerExpected { get; private set; }
     public string? ConnectionString { get; set; }
     
     public string? ConnectionStringName { get; set; }
@@ -17,6 +18,12 @@ public class SqlServerConfigurationOptions
     {
         ConfigurationSection = configurationSection ?? throw new ArgumentNullException(nameof(configurationSection));
         ConnectionString = null;
+        return this;
+    }
+
+    public SqlServerConfigurationOptions ExpectLogger()
+    {
+        IsLoggerExpected = true;
         return this;
     }
 }
