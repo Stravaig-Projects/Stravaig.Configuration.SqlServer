@@ -8,6 +8,54 @@ A configuration provider that uses SQL Server as its backing store.
 
 ---
 
+## Set up
+
+The simplest way is to configure the SQL Server configuration from the existing configuration up to that point. Any configuration providers added after the call to `AddSqlServer` will not have their data alter the way that the SQL Server configuration provider is set up.
+
+```csharp
+await Host.CreateDefaultBuilder(args)
+    .ConfigureAppConfiguration(builder =>
+    {
+        builder.AddSqlServer(opts =>
+        {
+            // Will pull connection string, schema and table names from the 
+            // configuration system up to this point.
+            opts.FromExistingConfiguration();
+        });
+    })
+```
+
+with the corresponding information in `appsettings.json`, e.g.:
+
+```json
+{
+    "ConnectionStrings": {
+        "ConfigDB": "*** Found in Secret Store ***"
+    },
+    "Stravaig": {
+        "AppConfiguration": {
+            "SchemaName": "Stravaig",
+            "TableName": "AppConfiguration",
+            "RefreshSeconds": 90,
+            "ConnectionStringName": "ConfigDB"
+        }
+    }
+}
+```
+
+The default configuration section used is `Stravaig.AppSettings`, however, this can be changed to what ever you prefer by passing in the path to the configuration section you prefer. e.g.
+
+```csharp
+builder.AddSqlServer(opts =>
+{
+    // Will pull connection string, schema and table names from the 
+    // configuration system at the specified config section.
+    opts.FromExistingConfiguration("MyApp:SqlConfiguration");
+});
+```
+
+
+
 ## Contributing / Getting Started
 
 * Ensure you have PowerShell 7.1.x or higher installed

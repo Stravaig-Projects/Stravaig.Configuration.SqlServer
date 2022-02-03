@@ -5,24 +5,10 @@ namespace Stravaig.Configuration.SqlServer;
 
 public static class SqlServerConfigurationBuilderExtensions
 {
-    public static IConfigurationBuilder AddSqlServer(this IConfigurationBuilder builder, Action<SqlServerConfigurationOptions>? optionsBuilder = null)
+    public static IConfigurationBuilder AddSqlServer(this IConfigurationBuilder configBuilder, Action<SqlServerConfigurationOptions>? optionsBuilder = null)
     {
-        var options = new SqlServerConfigurationOptions();
-        optionsBuilder?.Invoke(options);
-
-        if (!string.IsNullOrWhiteSpace(options.ConfigurationSection))
-            SetOptionsFromConfiguration(builder.Build(), options);
+        var options = SourceBuilder.BuildSource(configBuilder, optionsBuilder);
         
-        return builder.Add(new SqlServerConfigurationSource(
-            options.ConnectionString ?? throw new InvalidOperationException("Cannot build a SQL Server Configuration Provider with a null connection string."),
-            TimeSpan.FromSeconds(options.RefreshSeconds),
-            options.SchemaName,
-            options.TableName));
-    }
-
-    private static void SetOptionsFromConfiguration(IConfigurationRoot configRoot, SqlServerConfigurationOptions options)
-    {
-        var section = configRoot.GetSection(options.ConfigurationSection);
-        section.Bind(options);
+        return configBuilder.Add(options);
     }
 }
