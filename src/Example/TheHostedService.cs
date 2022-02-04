@@ -36,7 +36,7 @@ public class TheHostedService : IHostedService, IDisposable
         _timer.Elapsed += TimerOnElapsed;
         featureValues.OnChange((_, s) =>
         {
-            Console.WriteLine($"[{DateTime.Now:HH:mm:ss}] Change Detected. {s}");
+            _logger.LogInformation($"Change Detected. {s}", s);
         });
     }
 
@@ -47,7 +47,7 @@ public class TheHostedService : IHostedService, IDisposable
             WriteIndented = true,
         };
         string json = JsonSerializer.Serialize(_featureValues.CurrentValue, jsonOptions);
-        Console.Clear();
+        Console.WriteLine(Environment.NewLine);
         _logger.LogInformation(
             "At {Time} the object looks like:\n{Json}",
             e.SignalTime,

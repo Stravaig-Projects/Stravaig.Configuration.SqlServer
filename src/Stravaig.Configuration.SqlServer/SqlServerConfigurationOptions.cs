@@ -4,7 +4,8 @@ namespace Stravaig.Configuration.SqlServer;
 
 public class SqlServerConfigurationOptions
 {
-    internal bool IsLoggerExpected { get; private set; }
+    public bool IsLoggerExpected { get; set; }
+
     public string? ConnectionString { get; set; }
     
     public string? ConnectionStringName { get; set; }

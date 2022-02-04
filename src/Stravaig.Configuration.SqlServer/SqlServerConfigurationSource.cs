@@ -12,12 +12,14 @@ public class SqlServerConfigurationSource : IConfigurationSource
     public string SchemaName { get; private set; }
     public string TableName { get; private set; }
     public TimeSpan RefreshInterval { get; private set; }
+    public bool ExpectLogger { get; private set; }
 
-    public SqlServerConfigurationSource(string connectionString, TimeSpan? refreshInterval = null, string schemaName = "Stravaig", string tableName = "AppConfiguration")
+    public SqlServerConfigurationSource(string connectionString, bool expectLogger = false, TimeSpan? refreshInterval = null, string schemaName = "Stravaig", string tableName = "AppConfiguration")
     {
         ValidateConnectionString(connectionString);
         ValidateSchemaName(schemaName);
         ValidateTableName(tableName);
+        ExpectLogger = expectLogger;
         ConnectionString = connectionString;
         SchemaName = schemaName;
         TableName = tableName;

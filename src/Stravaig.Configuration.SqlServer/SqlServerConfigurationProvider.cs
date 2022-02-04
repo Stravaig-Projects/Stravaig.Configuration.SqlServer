@@ -9,7 +9,7 @@ namespace Stravaig.Configuration.SqlServer;
 
 public class SqlServerConfigurationProvider : ConfigurationProvider
 {
-    private ILogger<SqlServerConfigurationProvider> _logger = NullLogger<SqlServerConfigurationProvider>.Instance;
+    private ILogger<SqlServerConfigurationProvider> _logger;
     private readonly Lazy<string> _toStringValue;
     private readonly SqlServerConfigurationSource _source;
     private readonly IDataLoader _dataLoader;
@@ -25,6 +25,9 @@ public class SqlServerConfigurationProvider : ConfigurationProvider
         _source = source;
         _dataLoader = dataLoader;
         _toStringValue = new Lazy<string>(BuildToStringValue);
+        _logger = source.ExpectLogger
+            ? new ReplayLogger<SqlServerConfigurationProvider>()
+            : NullLogger<SqlServerConfigurationProvider>.Instance;
         _watcher = source.RefreshInterval == TimeSpan.Zero
             ? new NullSqlServerConfigurationWatcher()
             : new SqlServerConfigurationWatcher(source.RefreshInterval, this);
@@ -34,8 +37,8 @@ public class SqlServerConfigurationProvider : ConfigurationProvider
     {
         try
         {
-            var data = _dataLoader.RetrieveData(_source);
-            Data = new Dictionary<string, string>(data, StringComparer.OrdinalIgnoreCase);
+            _logger.LogInformation("Loading configuration data from SQL Server.");
+            Data = _dataLoader.RetrieveData(_source);
         }
         catch (Exception ex)
         {
@@ -54,7 +57,10 @@ public class SqlServerConfigurationProvider : ConfigurationProvider
         Load();
 
         if (DataDifferent(oldData, Data))
+        {
+            _logger.LogDebug("Detected differences in configuration data. Propagating changes.");
             OnReload();
+        }
     }
 
     private bool DataDifferent(IDictionary<string, string> oldData, IDictionary<string, string> newData)
@@ -92,6 +98,8 @@ public class SqlServerConfigurationProvider : ConfigurationProvider
 
     internal void AttachLogger(ILoggerFactory loggerFactory)
     {
+        var replayLogger = _logger as ReplayLogger<SqlServerConfigurationProvider>;
         _logger = loggerFactory.CreateLogger<SqlServerConfigurationProvider>();
+        replayLogger?.Replay(_logger);
     }
 }
