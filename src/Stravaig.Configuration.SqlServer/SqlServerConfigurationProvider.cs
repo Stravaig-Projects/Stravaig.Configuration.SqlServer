@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -31,20 +30,25 @@ public class SqlServerConfigurationProvider : ConfigurationProvider
         _watcher = source.RefreshInterval == TimeSpan.Zero
             ? new NullSqlServerConfigurationWatcher()
             : new SqlServerConfigurationWatcher(source.RefreshInterval, this);
+        _watcher.AttachLogger(_logger);
     }
     
     public override void Load()
     {
         try
         {
-            _logger.LogInformation("Loading configuration data from SQL Server.");
+            _logger.LogDebug("Loading configuration data from SQL Server.");
             Data = _dataLoader.RetrieveData(_source);
         }
         catch (Exception ex)
         {
             _logger.LogWarning(
                 ex,
-                "Failed to get configuration information from the database. {ExceptionMessage}",
+                "Failed to get configuration information from the table [{SchemaName}].[{TableName}] in the database [{DatabaseName}] on the server [{Server}]. {ExceptionMessage}",
+                _source.SchemaName,
+                _source.TableName,
+                _source.DatabaseName,
+                _source.ServerName,
                 ex.Message);
         }
         _watcher.EnsureStarted();
@@ -87,8 +91,7 @@ public class SqlServerConfigurationProvider : ConfigurationProvider
     {
         try
         {
-            SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder(_source.ConnectionString);
-            return $"{nameof(SqlServerConfigurationProvider)} ([{builder.DataSource}].[{builder.InitialCatalog}].[{_source.SchemaName}].[{_source.TableName}])";
+            return $"{nameof(SqlServerConfigurationProvider)} ([{_source.ServerName}].[{_source.DatabaseName}].[{_source.SchemaName}].[{_source.TableName}])";
         }
         catch (Exception ex)
         {
@@ -100,6 +103,7 @@ public class SqlServerConfigurationProvider : ConfigurationProvider
     {
         var replayLogger = _logger as ReplayLogger<SqlServerConfigurationProvider>;
         _logger = loggerFactory.CreateLogger<SqlServerConfigurationProvider>();
+        _watcher.AttachLogger(_logger);
         replayLogger?.Replay(_logger);
     }
 }

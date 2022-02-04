@@ -14,6 +14,12 @@ public class SqlServerConfigurationSource : IConfigurationSource
     public TimeSpan RefreshInterval { get; private set; }
     public bool ExpectLogger { get; private set; }
 
+    private readonly Lazy<string> _serverName;
+    public string ServerName => _serverName.Value;
+
+    private readonly Lazy<string> _databaseName;
+    public string DatabaseName => _databaseName.Value;
+
     public SqlServerConfigurationSource(string connectionString, bool expectLogger = false, TimeSpan? refreshInterval = null, string schemaName = "Stravaig", string tableName = "AppConfiguration")
     {
         ValidateConnectionString(connectionString);
@@ -24,6 +30,9 @@ public class SqlServerConfigurationSource : IConfigurationSource
         SchemaName = schemaName;
         TableName = tableName;
         RefreshInterval = refreshInterval ?? TimeSpan.Zero;
+
+        _serverName = new Lazy<string>(() => new SqlConnectionStringBuilder(connectionString).DataSource);
+        _databaseName = new Lazy<string>(() => new SqlConnectionStringBuilder(connectionString).InitialCatalog);
     }
 
     private void ValidateTableName(string tableName)

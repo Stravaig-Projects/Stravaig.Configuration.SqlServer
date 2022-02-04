@@ -1,5 +1,7 @@
 using System;
 using System.Timers;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Stravaig.Configuration.SqlServer;
 
@@ -7,6 +9,7 @@ public class SqlServerConfigurationWatcher : ISqlServerConfigurationWatcher
 {
     private readonly SqlServerConfigurationProvider _provider;
     private readonly Timer _timer;
+    private ILogger _logger = NullLogger.Instance;
     
     public SqlServerConfigurationWatcher(TimeSpan interval, SqlServerConfigurationProvider provider)
     {
@@ -19,20 +22,31 @@ public class SqlServerConfigurationWatcher : ISqlServerConfigurationWatcher
     {
         try
         {
-            Console.WriteLine($"[{DateTime.Now:HH:mm:ss}] Polling the database.");
+            _logger.LogDebug("Polling the database for SQL Server Configuration changes.");
             _provider.Reload();
         }
         catch (Exception ex)
         {
-            Console.WriteLine(ex.ToString());
-            // How do we log this? How do we get the logger in here?
+            _logger.LogWarning(
+                ex,
+                "Refreshing the configuration form the database failed. {ExceptionMessage}",
+                ex.Message);
         }
     }
 
     public void EnsureStarted()
     {
         if (!_timer.Enabled)
+        {
+            _logger.LogDebug(
+                "Starting SQL Server Configuration DB Polling every {Frequency} seconds.",
+                _timer.Interval / 1000.0);
             _timer.Start();
+        }
     }
-    
+
+    public void AttachLogger(ILogger logger)
+    {
+        _logger = logger;
+    }
 }

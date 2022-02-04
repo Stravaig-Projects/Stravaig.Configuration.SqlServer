@@ -7,7 +7,7 @@ using Microsoft.FeatureManagement;
 using Stravaig.Configuration.SqlServer;
 
 await Host.CreateDefaultBuilder(args)
-    .ConfigureAppConfiguration((ctx, builder) =>
+    .ConfigureAppConfiguration(builder =>
     {
         builder.AddUserSecrets<Program>();
         builder.AddSqlServer(opts =>
@@ -20,6 +20,7 @@ await Host.CreateDefaultBuilder(args)
     {
         builder.AddConsole();
         builder.AddDebug();
+        builder.SetMinimumLevel(LogLevel.Debug);
     })
     .ConfigureServices((ctx, services) =>
     {
