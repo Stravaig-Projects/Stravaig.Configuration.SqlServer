@@ -22,6 +22,7 @@ internal static class SourceBuilder
 
         return new SqlServerConfigurationSource(
             options.ConnectionString ?? throw new SqlServerConfigurationProviderException("Cannot build a SQL Server Configuration Provider without a connection string."),
+            options.IsLoggerExpected,
             TimeSpan.FromSeconds(options.RefreshSeconds),
             options.SchemaName ?? throw new SqlServerConfigurationProviderException("The schema name is required to use SQL Server Configuration."),
             options.TableName ?? throw new SqlServerConfigurationProviderException("The table name is required to use SQL Server Configuration."));
