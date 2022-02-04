@@ -54,7 +54,40 @@ builder.AddSqlServer(opts =>
 });
 ```
 
+### Adding logging
 
+The configuration provider is set up too early in the pipeline to be able to accept logging from the start. However you can attach a logger after it has been set up. The configuration provider will also hold on to any log messages and replay them once a logger it attached. It works like this:
+
+* When calling `AddSqlServer` on the configuration builder. Make sure you call `ExpectLogger()`. This sets up the replay mechanism.
+* Then set up your loggers. The SqlServerConfigurationProvider logs from Debug up.
+* By the time you get to configure services, you should be able to get a `ILoggerFactory`. There is an extension method, `AttachLoggerToSqlServerProvider` on `IConfigurationRoot` that will attach the logger.
+
+```csharp
+await Host.CreateDefaultBuilder(args)
+    .ConfigureAppConfiguration(builder =>
+    {
+        builder.AddSqlServer(opts =>
+        {
+            opts.FromExistingConfiguration()
+                .ExpectLogger();
+        });
+    })
+    .ConfigureLogging(builder =>
+    {
+        builder.AddConsole();
+        builder.AddDebug();
+        builder.SetMinimumLevel(LogLevel.Debug);
+    })
+    .ConfigureServices((ctx, services) =>
+    {
+        // Attach the logger to the SQL Server Configuration Provider
+        IConfigurationRoot configRoot = (IConfigurationRoot) ctx.Configuration;
+        configRoot.AttachLoggerToSqlServerProvider(services.BuildServiceProvider().GetService<ILoggerFactory>());
+    })
+
+```
+
+CAUTION: If you call `ExpectLogger` and never attach a logger, it will just hold on to the log messages for the lifetime of the application in memory.
 
 ## Contributing / Getting Started
 
