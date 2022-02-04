@@ -1,5 +1,16 @@
 # Full Release Notes
 
+## Version 0.2.0
+
+Date: Friday, 4 February, 2022 at 12:36:03 +00:00
+
+### Features
+
+- #11: Add logging
+
+---
+
+
 ## Version 0.1.0
 
 Date: Thursday, 3 February, 2022 at 12:20:20 +00:00
