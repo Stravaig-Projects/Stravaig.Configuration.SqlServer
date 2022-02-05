@@ -1,8 +1,8 @@
 using Microsoft.Extensions.Logging;
 
-namespace Stravaig.Configuration.SqlServer;
+namespace Stravaig.Configuration.SqlServer.Glue;
 
-public class NullSqlServerConfigurationWatcher : ISqlServerConfigurationWatcher
+internal class NullSqlServerConfigurationWatcher : ISqlServerConfigurationWatcher
 {
     public void EnsureStarted()
     {

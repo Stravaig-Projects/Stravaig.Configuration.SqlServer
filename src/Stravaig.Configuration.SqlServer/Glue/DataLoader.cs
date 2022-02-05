@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Data.SqlClient;
 
-namespace Stravaig.Configuration.SqlServer;
+namespace Stravaig.Configuration.SqlServer.Glue;
 
-public class DataLoader : IDataLoader
+internal class DataLoader : IDataLoader
 {
     private const string RetrieveSqlTemplate = "SELECT [ConfigKey], [ConfigValue] FROM [{0}].[{1}]";
     private const int KeyColumnPosition = 0;

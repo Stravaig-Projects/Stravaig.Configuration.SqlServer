@@ -1,8 +1,8 @@
 using Microsoft.Extensions.Logging;
 
-namespace Stravaig.Configuration.SqlServer;
+namespace Stravaig.Configuration.SqlServer.Glue;
 
-public interface ISqlServerConfigurationWatcher
+internal interface ISqlServerConfigurationWatcher
 {
     void EnsureStarted();
     void AttachLogger(ILogger logger);

@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
 
-namespace Stravaig.Configuration.SqlServer;
+namespace Stravaig.Configuration.SqlServer.Glue;
 
-public class ReplayLogger<T> : ReplayLogger, ILogger<T>
+internal class ReplayLogger<T> : ReplayLogger, ILogger<T>
 {
 }
 
-public class ReplayLogger : ILogger
+internal class ReplayLogger : ILogger
 {
     // This class is taken and modified from
     // https://stackoverflow.com/a/58265030/8152

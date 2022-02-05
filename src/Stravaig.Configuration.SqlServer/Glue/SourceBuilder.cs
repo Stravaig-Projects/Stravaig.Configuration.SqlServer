@@ -1,7 +1,7 @@
 using System;
 using Microsoft.Extensions.Configuration;
 
-namespace Stravaig.Configuration.SqlServer;
+namespace Stravaig.Configuration.SqlServer.Glue;
 
 internal static class SourceBuilder
 {

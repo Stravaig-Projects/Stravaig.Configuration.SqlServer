@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Stravaig.Configuration.SqlServer.Glue;
 
 namespace Stravaig.Configuration.SqlServer.Tests;
 

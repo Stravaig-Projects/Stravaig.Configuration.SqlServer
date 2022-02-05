@@ -3,9 +3,9 @@ using System.Timers;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 
-namespace Stravaig.Configuration.SqlServer;
+namespace Stravaig.Configuration.SqlServer.Glue;
 
-public class SqlServerConfigurationWatcher : ISqlServerConfigurationWatcher
+internal class SqlServerConfigurationWatcher : ISqlServerConfigurationWatcher
 {
     private readonly SqlServerConfigurationProvider _provider;
     private readonly Timer _timer;

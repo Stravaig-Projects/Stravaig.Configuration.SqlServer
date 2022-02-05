@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 
-namespace Stravaig.Configuration.SqlServer;
+namespace Stravaig.Configuration.SqlServer.Glue;
 
-public interface IDataLoader
+internal interface IDataLoader
 {
     IDictionary<string, string> RetrieveData(SqlServerConfigurationSource source);
 }
