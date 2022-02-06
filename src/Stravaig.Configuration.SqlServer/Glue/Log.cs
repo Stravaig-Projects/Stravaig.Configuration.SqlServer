@@ -52,4 +52,10 @@ public static partial class Log
         Level = LogLevel.Debug,
         Message = "Starting SQL Server Configuration DB Polling every {frequency} seconds.")]
     public static partial void StartingDbPolling(this ILogger logger, double frequency);
+
+    [LoggerMessage(
+        EventId = 9,
+        Level = LogLevel.Warning,
+        Message = "The replay limit was reached. There are {excessCount} logs that cannot be replayed.")]
+    public static partial void ReplayLimitExceeded(this ILogger logger, int excessCount);
 }

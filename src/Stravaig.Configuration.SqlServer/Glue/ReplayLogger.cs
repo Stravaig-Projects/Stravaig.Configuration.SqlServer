@@ -15,13 +15,12 @@ internal class ReplayLogger : ILogger
 
     private readonly object _lock = new ();
     private readonly Queue<Action<ILogger>> _logs;
-    private readonly Stack<IDisposable> _scopes;
     private readonly int _limit = 25;
+    private int _limitExcess;
 
-    public ReplayLogger()
+    internal ReplayLogger()
     {
-        this._logs = new Queue<Action<ILogger>>();
-        this._scopes = new Stack<IDisposable>();
+        _logs = new Queue<Action<ILogger>>();
     }
 
     public void Log<TState>(
@@ -39,7 +38,10 @@ internal class ReplayLogger : ILogger
         lock (_lock)
         {
             if (_logs.Count >= _limit)
-                _logs.Dequeue();
+            {
+                _limitExcess++;               
+                return;
+            }
             _logs.Enqueue(ReplayLog);
         }
     }
@@ -48,17 +50,7 @@ internal class ReplayLogger : ILogger
 
     public IDisposable BeginScope<TState>(TState state)
     {
-        lock (_lock)
-        {
-            _logs.Enqueue(logger =>
-            {
-                IDisposable scope = logger.BeginScope(state);
-
-                _scopes.Push(scope);
-            });
-
-            return new Scope(this);
-        }
+        return new Scope();
     }
 
     public void Replay(ILogger logger)
@@ -76,26 +68,19 @@ internal class ReplayLogger : ILogger
                 replayTo(logger);
             }
 
+            if (_limitExcess > 0)
+                logger.ReplayLimitExceeded(_limitExcess);
+                    
             _logs.Clear();
+            _limitExcess = 0;
         }
         logger.ReplayEnd();
     }
 
     private class Scope : IDisposable
     {
-        private readonly ReplayLogger _logger;
-
-        public Scope(ReplayLogger logger)
-        {
-            _logger = logger;
-        }
-
         public void Dispose()
         {
-            lock (_logger._lock)
-            {
-                _logger._logs.Enqueue(_ => this._logger._scopes.Pop());
-            }
         }
     }
 }
