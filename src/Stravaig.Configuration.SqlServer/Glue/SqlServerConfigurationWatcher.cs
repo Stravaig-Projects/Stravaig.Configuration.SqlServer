@@ -1,7 +1,6 @@
 using System;
 using System.Timers;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Stravaig.Configuration.SqlServer.Glue;
 
