@@ -46,4 +46,10 @@ public static partial class Log
         Level = LogLevel.Information,
         Message = "End of replay.")]
     public static partial void ReplayEnd(this ILogger logger);
+
+    [LoggerMessage(
+        EventId = 8,
+        Level = LogLevel.Debug,
+        Message = "Starting SQL Server Configuration DB Polling every {frequency} seconds.")]
+    public static partial void StartingDbPolling(this ILogger logger, double frequency);
 }

@@ -9,10 +9,11 @@ internal class SqlServerConfigurationWatcher : ISqlServerConfigurationWatcher
 {
     private readonly SqlServerConfigurationProvider _provider;
     private readonly Timer _timer;
-    private ILogger _logger = NullLogger.Instance;
+    private ILogger _logger;
     
-    public SqlServerConfigurationWatcher(TimeSpan interval, SqlServerConfigurationProvider provider)
+    public SqlServerConfigurationWatcher(TimeSpan interval, SqlServerConfigurationProvider provider, ILogger logger)
     {
+        _logger = logger;
         _provider = provider;
         _timer = new Timer(interval.TotalMilliseconds);
         _timer.Elapsed += TimerOnElapsed;
@@ -35,9 +36,7 @@ internal class SqlServerConfigurationWatcher : ISqlServerConfigurationWatcher
     {
         if (!_timer.Enabled)
         {
-            _logger.LogDebug(
-                "Starting SQL Server Configuration DB Polling every {Frequency} seconds.",
-                _timer.Interval / 1000.0);
+            _logger.StartingDbPolling(_timer.Interval / 1000.0);
             _timer.Start();
         }
     }

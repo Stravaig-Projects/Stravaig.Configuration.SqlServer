@@ -46,7 +46,7 @@ public class SqlServerConfigurationProvider : ConfigurationProvider
     {
         return source.RefreshInterval == TimeSpan.Zero
             ? NullSqlServerConfigurationWatcher.Instance
-            : new SqlServerConfigurationWatcher(source.RefreshInterval, provider);
+            : new SqlServerConfigurationWatcher(source.RefreshInterval, provider, provider._logger);
     }
 
     public override void Load()
@@ -61,7 +61,7 @@ public class SqlServerConfigurationProvider : ConfigurationProvider
             _logger.FailedToGetConfigurationData(ex, _source.SchemaName, _source.TableName, _source.DatabaseName, _source.ServerName, ex.Message);
         }
         _watcher.EnsureStarted();
-    }
+     }
     
     internal void Reload()
     {
