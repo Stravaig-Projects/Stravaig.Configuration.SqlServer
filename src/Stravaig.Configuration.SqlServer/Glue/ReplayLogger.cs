@@ -70,9 +70,7 @@ internal class ReplayLogger : ILogger
             if (_logs.Count == 0)
                 return;
 
-            logger.LogInformation(
-                "Replaying {Count} delayed logs. NOTE: Some replayed logs may not emit if filters prevent them.",
-                _logs.Count);
+            logger.ReplayStart(_logs.Count);
             foreach (Action<ILogger> replayTo in _logs)
             {
                 replayTo(logger);
@@ -80,7 +78,7 @@ internal class ReplayLogger : ILogger
 
             _logs.Clear();
         }
-        logger.LogInformation("End of replay.");
+        logger.ReplayEnd();
     }
 
     private class Scope : IDisposable

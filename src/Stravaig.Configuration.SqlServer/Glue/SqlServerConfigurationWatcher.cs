@@ -22,15 +22,12 @@ internal class SqlServerConfigurationWatcher : ISqlServerConfigurationWatcher
     {
         try
         {
-            _logger.LogDebug("Polling the database for SQL Server Configuration changes.");
+            _logger.PollingDatabase();
             _provider.Reload();
         }
         catch (Exception ex)
         {
-            _logger.LogWarning(
-                ex,
-                "Refreshing the configuration form the database failed. {ExceptionMessage}",
-                ex.Message);
+            _logger.RefreshFailed(ex, ex.Message);
         }
     }
 

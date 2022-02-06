@@ -9,13 +9,13 @@ public static class ConfigurationRootExtensions
 {
     public static IConfigurationRoot AttachLoggerToSqlServerProvider(this IConfigurationRoot configRoot, ILoggerFactory? loggerFactory)
     {
-        loggerFactory ??= NullLoggerFactory.Instance;
+        var theLoggerFactory = loggerFactory ?? NullLoggerFactory.Instance;
 
         var providers = configRoot.Providers
             .OfType<SqlServerConfigurationProvider>();
         foreach (var provider in providers)
         {
-            provider.AttachLogger(loggerFactory);
+            provider.AttachLogger(theLoggerFactory);
         }
 
         return configRoot;

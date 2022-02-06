@@ -4,6 +4,7 @@ namespace Stravaig.Configuration.SqlServer.Glue;
 
 internal class NullSqlServerConfigurationWatcher : ISqlServerConfigurationWatcher
 {
+    internal static readonly NullSqlServerConfigurationWatcher Instance = new ();
     public void EnsureStarted()
     {
     }
