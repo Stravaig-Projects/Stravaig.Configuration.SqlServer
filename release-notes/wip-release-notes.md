@@ -4,13 +4,20 @@
 
 Date: ???
 
-### Features
+### Bugs
 
-- #19: Limit the number of replayed logs.
+### Features
 
 ### Miscellaneous
 
-- #18: Use compile time logging source generation.
+### Dependent Packages
+
+- .NET 5.0
+  - No changes
+- .NET Core 3.1
+  - No changes
+- General
+  - No changes
 
 ---
 
