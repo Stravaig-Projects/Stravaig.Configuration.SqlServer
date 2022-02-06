@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
 
-namespace Stravaig.Configuration.SqlServer;
+namespace Stravaig.Configuration.SqlServer.Glue;
 
-public class ReplayLogger<T> : ReplayLogger, ILogger<T>
+internal class ReplayLogger<T> : ReplayLogger, ILogger<T>
 {
 }
 
-public class ReplayLogger : ILogger
+internal class ReplayLogger : ILogger
 {
     // This class is taken and modified from
     // https://stackoverflow.com/a/58265030/8152
@@ -70,9 +70,7 @@ public class ReplayLogger : ILogger
             if (_logs.Count == 0)
                 return;
 
-            logger.LogInformation(
-                "Replaying {Count} delayed logs. NOTE: Some replayed logs may not emit if filters prevent them.",
-                _logs.Count);
+            logger.ReplayStart(_logs.Count);
             foreach (Action<ILogger> replayTo in _logs)
             {
                 replayTo(logger);
@@ -80,7 +78,7 @@ public class ReplayLogger : ILogger
 
             _logs.Clear();
         }
-        logger.LogInformation("End of replay.");
+        logger.ReplayEnd();
     }
 
     private class Scope : IDisposable

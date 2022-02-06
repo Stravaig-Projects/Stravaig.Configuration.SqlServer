@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
+using Stravaig.Configuration.SqlServer.Glue;
 
 namespace Stravaig.Configuration.SqlServer;
 
@@ -15,44 +16,52 @@ public class SqlServerConfigurationProvider : ConfigurationProvider
     private readonly ISqlServerConfigurationWatcher _watcher;
 
     public SqlServerConfigurationProvider(SqlServerConfigurationSource source)
-        : this (source, new DataLoader())
+        : this (source, new DataLoader(), NullSqlServerConfigurationWatcher.Instance, CreateLogger(source))
     {
+        _watcher = CreateWatcher(source, this);
     }
 
-    internal SqlServerConfigurationProvider(SqlServerConfigurationSource source, IDataLoader dataLoader)
+    internal SqlServerConfigurationProvider(
+        SqlServerConfigurationSource source,
+        IDataLoader dataLoader,
+        ISqlServerConfigurationWatcher watcher,
+        ILogger<SqlServerConfigurationProvider> logger)
     {
+        _toStringValue = new Lazy<string>(BuildToStringValue);
         _source = source;
         _dataLoader = dataLoader;
-        _toStringValue = new Lazy<string>(BuildToStringValue);
-        _logger = source.ExpectLogger
-            ? new ReplayLogger<SqlServerConfigurationProvider>()
-            : NullLogger<SqlServerConfigurationProvider>.Instance;
-        _watcher = source.RefreshInterval == TimeSpan.Zero
-            ? new NullSqlServerConfigurationWatcher()
-            : new SqlServerConfigurationWatcher(source.RefreshInterval, this);
+        _logger = logger;
+        _watcher = watcher;
         _watcher.AttachLogger(_logger);
     }
-    
+
+    private static ILogger<SqlServerConfigurationProvider> CreateLogger(SqlServerConfigurationSource source)
+    {
+        return source.ExpectLogger
+            ? new ReplayLogger<SqlServerConfigurationProvider>()
+            : NullLogger<SqlServerConfigurationProvider>.Instance;
+    }
+
+    private static ISqlServerConfigurationWatcher CreateWatcher(SqlServerConfigurationSource source, SqlServerConfigurationProvider provider)
+    {
+        return source.RefreshInterval == TimeSpan.Zero
+            ? NullSqlServerConfigurationWatcher.Instance
+            : new SqlServerConfigurationWatcher(source.RefreshInterval, provider, provider._logger);
+    }
+
     public override void Load()
     {
         try
         {
-            _logger.LogDebug("Loading configuration data from SQL Server.");
+            _logger.LoadingConfigurationData();
             Data = _dataLoader.RetrieveData(_source);
         }
         catch (Exception ex)
         {
-            _logger.LogWarning(
-                ex,
-                "Failed to get configuration information from the table [{SchemaName}].[{TableName}] in the database [{DatabaseName}] on the server [{Server}]. {ExceptionMessage}",
-                _source.SchemaName,
-                _source.TableName,
-                _source.DatabaseName,
-                _source.ServerName,
-                ex.Message);
+            _logger.FailedToGetConfigurationData(ex, _source.SchemaName, _source.TableName, _source.DatabaseName, _source.ServerName, ex.Message);
         }
         _watcher.EnsureStarted();
-    }
+     }
     
     internal void Reload()
     {
@@ -62,7 +71,7 @@ public class SqlServerConfigurationProvider : ConfigurationProvider
 
         if (DataDifferent(oldData, Data))
         {
-            _logger.LogDebug("Detected differences in configuration data. Propagating changes.");
+            _logger.DetectedDifferences();
             OnReload();
         }
     }
@@ -71,6 +80,7 @@ public class SqlServerConfigurationProvider : ConfigurationProvider
     {
         if (oldData.Count != newData.Count)
             return true;
+
         foreach (var oldKey in oldData.Keys)
         {
             if (!newData.ContainsKey(oldKey))

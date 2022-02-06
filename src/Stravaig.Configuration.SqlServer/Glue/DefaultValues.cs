@@ -1,6 +1,6 @@
-namespace Stravaig.Configuration.SqlServer;
+namespace Stravaig.Configuration.SqlServer.Glue;
 
-public static class DefaultValues
+internal static class DefaultValues
 {
     public const int NoRefresh = 0;
     public const string SchemaName = "Stravaig";
