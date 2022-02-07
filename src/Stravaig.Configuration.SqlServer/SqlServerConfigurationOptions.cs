@@ -15,6 +15,8 @@ public class SqlServerConfigurationOptions
     public string TableName { get; set; } = DefaultValues.TableName;
 
     public int RefreshSeconds { get; set; } = DefaultValues.NoRefresh;
+
+    public int CommandTimeout { get; set; } = DefaultValues.CommandTimeout;
     
     public SqlServerConfigurationOptions FromExistingConfiguration(string configurationSection = DefaultValues.ConfigurationSection)
     {
