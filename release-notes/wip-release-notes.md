@@ -4,20 +4,15 @@
 
 Date: ???
 
-### Bugs
-
 ### Features
 
-### Miscellaneous
+- #16: Allow command timeout to be configured.
 
 ### Dependent Packages
 
-- .NET 5.0
-  - No changes
-- .NET Core 3.1
-  - No changes
-- General
-  - No changes
+- coverlet.collector from 3.1.1 to 3.1.2
+- Microsoft.Extensions.Configuration from 6.0.0 to 6.0.1
+- Microsoft.Extensions.Hosting from 6.0.0 to 6.0.1
 
 ---
 

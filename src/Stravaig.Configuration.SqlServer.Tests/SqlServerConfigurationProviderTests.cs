@@ -103,7 +103,7 @@ public class SqlServerConfigurationProviderTests
         thirdLog.PropertyDictionary["exceptionMessage"].ShouldBe("Dummy Exception.");
         logs[3].OriginalMessage.ShouldBe("End of replay.");
     }
-    
+
     private SqlServerConfigurationProvider SetupProvider()
     {
         _fakeLoader = new FakeDataLoader()

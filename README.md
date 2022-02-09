@@ -37,7 +37,8 @@ with the corresponding information in `appsettings.json`, e.g.:
             "SchemaName": "Stravaig",
             "TableName": "AppConfiguration",
             "RefreshSeconds": 90,
-            "ConnectionStringName": "ConfigDB"
+            "ConnectionStringName": "ConfigDB",
+            "CommandTimeout": 10
         }
     }
 }

@@ -16,7 +16,7 @@ public class SqlServerConfigurationProvider : ConfigurationProvider
     private readonly ISqlServerConfigurationWatcher _watcher;
 
     public SqlServerConfigurationProvider(SqlServerConfigurationSource source)
-        : this (source, new DataLoader(), NullSqlServerConfigurationWatcher.Instance, CreateLogger(source))
+        : this (source, new DataLoader(), NullSqlServerConfigurationWatcher.Instance, source.CreateLogger())
     {
         _watcher = CreateWatcher(source, this);
     }
@@ -34,14 +34,7 @@ public class SqlServerConfigurationProvider : ConfigurationProvider
         _watcher = watcher;
         _watcher.AttachLogger(_logger);
     }
-
-    private static ILogger<SqlServerConfigurationProvider> CreateLogger(SqlServerConfigurationSource source)
-    {
-        return source.ExpectLogger
-            ? new ReplayLogger<SqlServerConfigurationProvider>()
-            : NullLogger<SqlServerConfigurationProvider>.Instance;
-    }
-
+    
     private static ISqlServerConfigurationWatcher CreateWatcher(SqlServerConfigurationSource source, SqlServerConfigurationProvider provider)
     {
         return source.RefreshInterval == TimeSpan.Zero

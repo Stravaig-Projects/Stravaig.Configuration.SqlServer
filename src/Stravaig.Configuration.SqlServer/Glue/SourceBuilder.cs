@@ -21,11 +21,12 @@ internal static class SourceBuilder
             ApplyFromConnectionStringsSection(options, configRoot.Value);
 
         return new SqlServerConfigurationSource(
-            options.ConnectionString ?? throw new SqlServerConfigurationProviderException("Cannot build a SQL Server Configuration Provider without a connection string."),
-            options.IsLoggerExpected,
-            TimeSpan.FromSeconds(options.RefreshSeconds),
-            options.SchemaName ?? throw new SqlServerConfigurationProviderException("The schema name is required to use SQL Server Configuration."),
-            options.TableName ?? throw new SqlServerConfigurationProviderException("The table name is required to use SQL Server Configuration."));
+            connectionString: options.ConnectionString ?? throw new SqlServerConfigurationProviderException("Cannot build a SQL Server Configuration Provider without a connection string."),
+            expectLogger: options.IsLoggerExpected,
+            commandTimeout: TimeSpan.FromSeconds(options.CommandTimeout),
+            refreshInterval: TimeSpan.FromSeconds(options.RefreshSeconds),
+            schemaName: options.SchemaName ?? throw new SqlServerConfigurationProviderException("The schema name is required to use SQL Server Configuration."),
+            tableName: options.TableName ?? throw new SqlServerConfigurationProviderException("The table name is required to use SQL Server Configuration."));
     }
 
     private static void ApplyFromConnectionStringsSection(SqlServerConfigurationOptions options, IConfigurationRoot configRoot)

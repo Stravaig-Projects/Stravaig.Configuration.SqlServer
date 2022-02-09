@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data.SqlClient;
 
 namespace Stravaig.Configuration.SqlServer.Glue;
@@ -15,6 +16,7 @@ internal class DataLoader : IDataLoader
         using SqlConnection connection = new SqlConnection(source.ConnectionString);
         connection.Open();
         var cmd = new SqlCommand(sql, connection);
+        cmd.CommandTimeout = (int)source.CommandTimeout.TotalSeconds;
         using var reader = cmd.ExecuteReader();
         return MaterialiseData(reader);
     }

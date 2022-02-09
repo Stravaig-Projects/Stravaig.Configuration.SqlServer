@@ -23,8 +23,8 @@ public class FakeDataLoader : IDataLoader
 
 public class FakeSqlServerConfigurationWatcher : ISqlServerConfigurationWatcher
 {
-    ILogger _logger = NullLogger.Instance;
-    private SqlServerConfigurationProvider _provider;
+    ILogger? _logger = NullLogger.Instance;
+    private SqlServerConfigurationProvider? _provider;
     
     public void EnsureStarted()
     {
@@ -35,10 +35,8 @@ public class FakeSqlServerConfigurationWatcher : ISqlServerConfigurationWatcher
         _logger = logger;
     }
 
-    public void AttacheProvider(SqlServerConfigurationProvider provider)
+    public void AttachProvider(SqlServerConfigurationProvider provider)
     {
         _provider = provider;
     }
-    
-    
 }

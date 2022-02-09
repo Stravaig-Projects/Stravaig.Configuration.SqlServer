@@ -2,6 +2,7 @@ using System;
 using System.Data.SqlClient;
 using System.Text.RegularExpressions;
 using Microsoft.Extensions.Configuration;
+using Stravaig.Configuration.SqlServer.Glue;
 
 namespace Stravaig.Configuration.SqlServer;
 
@@ -13,6 +14,8 @@ public class SqlServerConfigurationSource : IConfigurationSource
     public string TableName { get; private set; }
     public TimeSpan RefreshInterval { get; private set; }
     public bool ExpectLogger { get; private set; }
+    
+    public TimeSpan CommandTimeout { get; private set; }
 
     private readonly Lazy<string> _serverName;
     public string ServerName => _serverName.Value;
@@ -20,7 +23,16 @@ public class SqlServerConfigurationSource : IConfigurationSource
     private readonly Lazy<string> _databaseName;
     public string DatabaseName => _databaseName.Value;
 
-    public SqlServerConfigurationSource(string connectionString, bool expectLogger = false, TimeSpan? refreshInterval = null, string schemaName = "Stravaig", string tableName = "AppConfiguration")
+    private readonly Lazy<TimeSpan> _connectionTimeout;
+    public TimeSpan ConnectionTimeout => _connectionTimeout.Value;
+
+    public SqlServerConfigurationSource(
+        string connectionString,
+        bool expectLogger = false,
+        TimeSpan? commandTimeout = null,
+        TimeSpan? refreshInterval = null,
+        string schemaName = "Stravaig",
+        string tableName = "AppConfiguration")
     {
         ValidateConnectionString(connectionString);
         ValidateSchemaName(schemaName);
@@ -30,9 +42,11 @@ public class SqlServerConfigurationSource : IConfigurationSource
         SchemaName = schemaName;
         TableName = tableName;
         RefreshInterval = refreshInterval ?? TimeSpan.Zero;
+        CommandTimeout = commandTimeout ?? TimeSpan.FromSeconds(DefaultValues.CommandTimeout);
 
         _serverName = new Lazy<string>(() => new SqlConnectionStringBuilder(connectionString).DataSource);
         _databaseName = new Lazy<string>(() => new SqlConnectionStringBuilder(connectionString).InitialCatalog);
+        _connectionTimeout = new Lazy<TimeSpan>(() => TimeSpan.FromSeconds(new SqlConnectionStringBuilder(connectionString).ConnectTimeout));
     }
 
     private void ValidateTableName(string tableName)

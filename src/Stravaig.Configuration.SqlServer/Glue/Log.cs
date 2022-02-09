@@ -58,4 +58,16 @@ public static partial class Log
         Level = LogLevel.Warning,
         Message = "The replay limit was reached. There are {excessCount} logs that cannot be replayed.")]
     public static partial void ReplayLimitExceeded(this ILogger logger, int excessCount);
+
+    [LoggerMessage(
+        EventId = 10,
+        Level = LogLevel.Information,
+        Message = "SQL Server Configuration Provider will retrieve from [{serverName}].[{databaseName}].[{schemaName}].[{tableName}] {frequency}. Will wait {connectionTimeout} seconds to connect, and {commandTimeout} seconds to retrieve data.")]
+    public static partial void InitialProviderDescription(this ILogger logger, string serverName, string databaseName, string schemaName, string tableName, string frequency, int connectionTimeout, int commandTimeout);
+    
+    [LoggerMessage(
+        EventId = 11,
+        Level = LogLevel.Warning,
+        Message = "The refresh interval, {refreshInterval} seconds, should be greater than combined connection, {connectionTimeout} seconds, and command, {commandTimeout} seconds, timeouts. A new refresh cycle may start before the previous cycle is complete.")]
+    public static partial void WarnOfCycleInterleave(this ILogger logger, int refreshInterval, int connectionTimeout, int commandTimeout);
 }
