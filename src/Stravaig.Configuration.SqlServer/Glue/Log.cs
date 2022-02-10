@@ -49,7 +49,7 @@ public static partial class Log
 
     [LoggerMessage(
         EventId = 8,
-        Level = LogLevel.Debug,
+        Level = LogLevel.Information,
         Message = "Starting SQL Server Configuration DB Polling every {frequency} seconds.")]
     public static partial void StartingDbPolling(this ILogger logger, double frequency);
 
