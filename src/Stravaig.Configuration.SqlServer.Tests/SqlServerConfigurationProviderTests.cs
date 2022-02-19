@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using NUnit.Framework;
 using Shouldly;
 using Stravaig.Configuration.SqlServer.Glue;
@@ -12,11 +13,11 @@ namespace Stravaig.Configuration.SqlServer.Tests;
 public class SqlServerConfigurationProviderTests
 {
     private const string DummyConnectionString = "Server=localhost;Database=testing";
-    private FakeDataLoader _fakeLoader;
-    private FakeSqlServerConfigurationWatcher _fakeWatcher;
-    private ILoggerFactory _loggerFactory;
-    private TestCaptureLoggerProvider _loggerProvider;
-    private SqlServerConfigurationSource _source;
+    private FakeDataLoader _fakeLoader = new ();
+    private FakeSqlServerConfigurationWatcher _fakeWatcher = new ();
+    private ILoggerFactory _loggerFactory = NullLoggerFactory.Instance;
+    private TestCaptureLoggerProvider _loggerProvider = new ();
+    private SqlServerConfigurationSource _source = new (DummyConnectionString);
 
     [SetUp]
     public void Setup()

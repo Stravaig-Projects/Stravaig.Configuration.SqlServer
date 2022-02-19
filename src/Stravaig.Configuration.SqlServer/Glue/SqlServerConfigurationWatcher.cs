@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Stravaig.Configuration.SqlServer.Glue;
 
-internal class SqlServerConfigurationWatcher : ISqlServerConfigurationWatcher
+internal sealed class SqlServerConfigurationWatcher : ISqlServerConfigurationWatcher, IDisposable
 {
     private readonly SqlServerConfigurationProvider _provider;
     private readonly Timer _timer;
@@ -14,7 +14,10 @@ internal class SqlServerConfigurationWatcher : ISqlServerConfigurationWatcher
     {
         _logger = logger;
         _provider = provider;
-        _timer = new Timer(interval.TotalMilliseconds);
+        _timer = new Timer(interval.TotalMilliseconds)
+        {
+            AutoReset = false,
+        };
         _timer.Elapsed += TimerOnElapsed;
     }
 
@@ -28,6 +31,11 @@ internal class SqlServerConfigurationWatcher : ISqlServerConfigurationWatcher
         catch (Exception ex)
         {
             _logger.RefreshFailed(ex, ex.Message);
+        }
+        finally
+        {
+            _timer.Start();
+            _logger.WaitingForNextCycle((int)_timer.Interval / 1000);
         }
     }
 
@@ -43,5 +51,10 @@ internal class SqlServerConfigurationWatcher : ISqlServerConfigurationWatcher
     public void AttachLogger(ILogger logger)
     {
         _logger = logger;
+    }
+
+    public void Dispose()
+    {
+        _timer.Dispose();
     }
 }

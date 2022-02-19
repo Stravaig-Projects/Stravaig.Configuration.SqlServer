@@ -1,8 +1,9 @@
+using System;
 using Microsoft.Extensions.Logging;
 
 namespace Stravaig.Configuration.SqlServer.Glue;
 
-internal class NullSqlServerConfigurationWatcher : ISqlServerConfigurationWatcher
+internal sealed class NullSqlServerConfigurationWatcher : ISqlServerConfigurationWatcher
 {
     internal static readonly NullSqlServerConfigurationWatcher Instance = new ();
     public void EnsureStarted()
@@ -10,6 +11,10 @@ internal class NullSqlServerConfigurationWatcher : ISqlServerConfigurationWatche
     }
 
     public void AttachLogger(ILogger logger)
+    {
+    }
+
+    public void Dispose()
     {
     }
 }

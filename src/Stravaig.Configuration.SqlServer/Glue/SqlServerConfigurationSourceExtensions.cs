@@ -21,12 +21,6 @@ internal static class SqlServerConfigurationSourceExtensions
             (int)source.ConnectionTimeout.TotalSeconds,
             (int)source.CommandTimeout.TotalSeconds);
         
-        if (source.ConnectionTimeout + source.CommandTimeout > source.RefreshInterval)
-            logger.WarnOfCycleInterleave(
-                (int)source.RefreshInterval.TotalSeconds,
-                (int)source.ConnectionTimeout.TotalSeconds,
-                (int)source.CommandTimeout.TotalSeconds);
         return logger;
-
     }
 }

@@ -39,4 +39,8 @@ public class FakeSqlServerConfigurationWatcher : ISqlServerConfigurationWatcher
     {
         _provider = provider;
     }
+
+    public void Dispose()
+    {
+    }
 }

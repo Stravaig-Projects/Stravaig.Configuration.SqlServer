@@ -36,11 +36,16 @@ public class TheHostedService : IHostedService, IDisposable
         _timer.Elapsed += TimerOnElapsed;
         featureValues.OnChange((_, s) =>
         {
-            _logger.LogInformation($"Change Detected. {s}", s);
+            _logger.LogInformation("Change Detected. {S}", s);
         });
     }
 
     private async void TimerOnElapsed(object? sender, ElapsedEventArgs e)
+    {
+        await LogCurrentStateAsync();
+    }
+
+    private async Task LogCurrentStateAsync()
     {
         var jsonOptions = new JsonSerializerOptions()
         {
@@ -49,23 +54,24 @@ public class TheHostedService : IHostedService, IDisposable
         string json = JsonSerializer.Serialize(_featureValues.CurrentValue, jsonOptions);
         Console.WriteLine(Environment.NewLine);
         _logger.LogInformation(
-            "At {Time} the object looks like:\n{Json}",
-            e.SignalTime,
+            "The object looks like:\n{Json}",
             json);
         await foreach (string feature in _featureManager.GetFeatureNamesAsync())
         {
             var state = await _featureManager.IsEnabledAsync(feature);
             _logger.LogInformation("{Feature} : {State}", feature, state);
         }
+
         _logger.LogConfigurationValuesAsInformation(_configRoot.GetSection("MyConfiguration"));
     }
 
-    public Task StartAsync(CancellationToken cancellationToken)
+    public async Task StartAsync(CancellationToken cancellationToken)
     {
         _logger.LogInformation("The hosted service is starting.");
         _logger.LogProvidersAsInformation(_configRoot);
+
+        await LogCurrentStateAsync();
         _timer.Enabled = true;
-        return Task.CompletedTask;
     }
 
     public Task StopAsync(CancellationToken cancellationToken)
