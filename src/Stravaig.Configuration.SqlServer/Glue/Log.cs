@@ -65,9 +65,12 @@ public static partial class Log
         Message = "SQL Server Configuration Provider will retrieve from [{serverName}].[{databaseName}].[{schemaName}].[{tableName}] {frequency}. Will wait {connectionTimeout} seconds to connect, and {commandTimeout} seconds to retrieve data.")]
     public static partial void InitialProviderDescription(this ILogger logger, string serverName, string databaseName, string schemaName, string tableName, string frequency, int connectionTimeout, int commandTimeout);
     
+    // Event Id 11 was retired as the log message was no longer relevant.
+    
     [LoggerMessage(
-        EventId = 11,
-        Level = LogLevel.Warning,
-        Message = "The refresh interval, {refreshInterval} seconds, should be greater than combined connection, {connectionTimeout} seconds, and command, {commandTimeout} seconds, timeouts. A new refresh cycle may start before the previous cycle is complete.")]
-    public static partial void WarnOfCycleInterleave(this ILogger logger, int refreshInterval, int connectionTimeout, int commandTimeout);
+        EventId = 12,
+        Level = LogLevel.Debug,
+        Message = "Waiting {refreshInterval} seconds until the next polling cycle.")]
+    public static partial void WaitingForNextCycle(this ILogger logger, int refreshInterval);
+
 }

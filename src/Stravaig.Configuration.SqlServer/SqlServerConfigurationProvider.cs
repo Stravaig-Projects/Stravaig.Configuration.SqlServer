@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
 using Stravaig.Configuration.SqlServer.Glue;
 
 namespace Stravaig.Configuration.SqlServer;
@@ -44,6 +43,12 @@ public class SqlServerConfigurationProvider : ConfigurationProvider
 
     public override void Load()
     {
+        UpdateData();
+        _watcher.EnsureStarted();
+    }
+    
+    private void UpdateData()
+    {
         try
         {
             _logger.LoadingConfigurationData();
@@ -53,14 +58,13 @@ public class SqlServerConfigurationProvider : ConfigurationProvider
         {
             _logger.FailedToGetConfigurationData(ex, _source.SchemaName, _source.TableName, _source.DatabaseName, _source.ServerName, ex.Message);
         }
-        _watcher.EnsureStarted();
-     }
+    }
     
     internal void Reload()
     {
         // Get existing data
         var oldData = Data;
-        Load();
+        UpdateData();
 
         if (DataDifferent(oldData, Data))
         {

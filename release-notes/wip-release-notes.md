@@ -7,10 +7,7 @@ Date: ???
 ### Bugs
 
 - #22: Change log level from debug to information for start polling message.
-
-### Features
-
-### Miscellaneous
+- #29: Polling interval to be time between cycles
 
 ### Dependent Packages
 
