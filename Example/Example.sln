@@ -1,8 +1,21 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExampleApp", "ExampleApp\ExampleApp.csproj", "{378AFB66-CCEC-4097-A738-0EFD3D707C4C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "__Scripts", "__Scripts", "{53F0083C-7F2E-4A4C-BD73-450100AB2025}"
+	ProjectSection(SolutionItems) = preProject
+		Start-SqlServer.ps1 = Start-SqlServer.ps1
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{378AFB66-CCEC-4097-A738-0EFD3D707C4C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{378AFB66-CCEC-4097-A738-0EFD3D707C4C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{378AFB66-CCEC-4097-A738-0EFD3D707C4C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{378AFB66-CCEC-4097-A738-0EFD3D707C4C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

@@ -1,0 +1,27 @@
+﻿@model RawConfigModel
+<div>
+    <h1>Raw Configuration</h1>
+
+    <h2>Providers</h2>
+    <ul>
+        @foreach (var provider in Model.Providers)
+        {
+            <li>@provider</li>
+        }
+    </ul>
+    
+    <h2>Keys and Values</h2>
+    <table>
+        <thead>
+        <td>Key</td>
+        <td>Value</td>
+        </thead>
+        @foreach (var kvp in Model.Values)
+        {
+            <tr>
+                <td>@kvp.Key</td>
+                <td>@kvp.Value</td>
+            </tr>
+        }
+    </table>
+</div>
