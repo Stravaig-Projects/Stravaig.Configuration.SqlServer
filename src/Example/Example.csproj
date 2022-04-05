@@ -15,7 +15,7 @@
     <ItemGroup>
       <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="6.0.1" />
       <PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.1" />
-      <PackageReference Include="Microsoft.FeatureManagement" Version="2.4.0" />
+      <PackageReference Include="Microsoft.FeatureManagement" Version="2.5.0" />
       <PackageReference Include="Stravaig.Configuration.Diagnostics.Logging" Version="1.1.1" />
     </ItemGroup>
 
