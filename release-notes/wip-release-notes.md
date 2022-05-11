@@ -11,7 +11,8 @@ Date: ???
 
 ### Dependent Packages
 
-- No changes
+- Bump Microsoft.Extensions.Configuration from 6.0.0 to 6.0.1
+- Bump Microsoft.Extensions.Logging.Abstractions from 6.0.0 to 6.0.1
 
 ---
 
