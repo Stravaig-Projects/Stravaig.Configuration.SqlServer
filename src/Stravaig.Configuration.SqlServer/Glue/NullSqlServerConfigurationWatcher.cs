@@ -1,4 +1,3 @@
-using System;
 using Microsoft.Extensions.Logging;
 
 namespace Stravaig.Configuration.SqlServer.Glue;

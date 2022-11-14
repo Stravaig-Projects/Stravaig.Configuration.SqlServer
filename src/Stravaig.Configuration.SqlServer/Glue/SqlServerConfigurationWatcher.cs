@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Stravaig.Configuration.SqlServer.Glue;
 
-internal sealed class SqlServerConfigurationWatcher : ISqlServerConfigurationWatcher, IDisposable
+internal sealed class SqlServerConfigurationWatcher : ISqlServerConfigurationWatcher
 {
     private readonly SqlServerConfigurationProvider _provider;
     private readonly Timer _timer;
