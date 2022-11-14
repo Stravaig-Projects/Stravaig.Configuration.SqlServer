@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
 using Stravaig.Configuration.SqlServer.Glue;
 
 namespace Stravaig.Configuration.SqlServer.Tests;
@@ -23,21 +22,16 @@ public class FakeDataLoader : IDataLoader
 
 public class FakeSqlServerConfigurationWatcher : ISqlServerConfigurationWatcher
 {
-    ILogger? _logger = NullLogger.Instance;
-    private SqlServerConfigurationProvider? _provider;
-    
     public void EnsureStarted()
     {
     }
 
     public void AttachLogger(ILogger logger)
     {
-        _logger = logger;
     }
 
     public void AttachProvider(SqlServerConfigurationProvider provider)
     {
-        _provider = provider;
     }
 
     public void Dispose()
