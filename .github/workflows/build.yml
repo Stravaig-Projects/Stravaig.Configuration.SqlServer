@@ -1,7 +1,7 @@
 name: Stravaig Configuration SQL Server Provider
-on: 
+on:
   push:
-    branches: 
+    branches:
       - main
 
     paths-ignore:
@@ -25,7 +25,7 @@ on:
   workflow_dispatch:
     inputs:
       isPublic:
-        description: 'Is Public Release'     
+        description: 'Is Public Release'
         required: false
         default: "false"
       isPreview:
@@ -41,7 +41,7 @@ jobs:
       STRAVAIG_SOLUTION: src/Stravaig.Configuration.SqlServer.sln
       STRAVAIG_TESTS: Stravaig.Configuration.SqlServer.Tests
       STRAVAIG_PROJECT: Stravaig.Configuration.SqlServer
-    
+
     steps:
       - name: Check out code
         uses: actions/checkout@v2
@@ -64,22 +64,22 @@ jobs:
           echo "Publish To NuGet: $STRAVAIG_PUBLISH_TO_NUGET"
           echo "Is Preview: $STRAVAIG_IS_PREVIEW"
           echo "Is Stable: $STRAVAIG_IS_STABLE"
-          
+
       - uses: actions/setup-dotnet@v1
-        name: Setup .NET 6.0 (Current LTS)
+        name: Setup .NET 6.0 (LTS)
         with:
           dotnet-version: 6.0.x
 
       - name: Build Solution
         run: dotnet build $STRAVAIG_SOLUTION --configuration Release
-       
+
       - name: Run Tests
         run: dotnet test src/$STRAVAIG_TESTS/$STRAVAIG_TESTS.csproj --configuration Release
-       
+
       - name: Package Preview Release
         if: ${{ env.STRAVAIG_IS_PREVIEW == 'true' }}
         run: dotnet pack ./src/$STRAVAIG_PROJECT/$STRAVAIG_PROJECT.csproj --configuration Release --output ./out --include-symbols --include-source /p:VersionPrefix="$STRAVAIG_PACKAGE_VERSION" --version-suffix "$STRAVAIG_PACKAGE_VERSION_SUFFIX" -p:IncludeSymbols=true -p:SymbolPackageFormat=snupkg
-       
+
       - name: Package Stable Release
         if: ${{ env.STRAVAIG_IS_STABLE == 'true' }}
         run: dotnet pack ./src/$STRAVAIG_PROJECT/$STRAVAIG_PROJECT.csproj --configuration Release --output ./out --include-symbols --include-source /p:VersionPrefix="$STRAVAIG_PACKAGE_VERSION" -p:IncludeSymbols=true -p:SymbolPackageFormat=snupkg
@@ -104,7 +104,7 @@ jobs:
 
       - name: Archive Simulated Release Information
         if: ${{ env.STRAVAIG_PUBLISH_TO_NUGET == 'false' }}
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: simulated-release-information
           path: |
@@ -116,7 +116,7 @@ jobs:
 
       - name: Archive Release Notes
         if: ${{ env.STRAVAIG_PUBLISH_TO_NUGET == 'true' }}
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: release-information
           path: |
@@ -124,12 +124,12 @@ jobs:
             release-notes/full-release-notes.md
             release-notes/release-notes-${{ env.STRAVAIG_PACKAGE_FULL_VERSION }}.md
             out/**
-        
+
       - name: Create Release
         if: ${{ env.STRAVAIG_PUBLISH_TO_NUGET == 'true' }}
-        shell: pwsh 
-        env: 
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
+        shell: pwsh
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: | 
           $assets = @(); 
           $assets += "./out/*.nupkg" 
@@ -139,7 +139,7 @@ jobs:
           $assets += "README.md" 
           $assets += "./release-notes/release-notes-${{ env.STRAVAIG_PACKAGE_FULL_VERSION }}.md" 
           ./Create-Release.ps1 -NotesFile "./release-body.md" -Assets $assets 
-          
+
       - name: Bump version
         #IF Publishing & Stable release
         if: ${{ env.STRAVAIG_PUBLISH_TO_NUGET == 'true' && env.STRAVAIG_IS_STABLE == 'true' }}
@@ -151,7 +151,7 @@ jobs:
         if: ${{ env.STRAVAIG_PUBLISH_TO_NUGET == 'true' && env.STRAVAIG_IS_STABLE == 'true' }}
         shell: pwsh
         run: ./Reset-WipReleaseNotes.ps1
-        
+
       - name: Commit post release updates
         #IF Publishing & Stable release
         if: ${{ env.STRAVAIG_PUBLISH_TO_NUGET == 'true' && env.STRAVAIG_IS_STABLE == 'true' }}

@@ -101,7 +101,7 @@ function Get-IgnoredNamesList($IgnoredNamesPath, $AkaContributors)
         }
     }
 
-    $IgnoredNamesPath = Get-ConfigFilePath -configFilePath $IgnoredNamesPath -defaultConfigFilePath "$PSScriptRoot/.stravaig/list-contributor-ignore-names.txt" -friendlyName "list of ignored names";    
+    $IgnoredNamesPath = Get-ConfigFilePath -configFilePath $IgnoredNamesPath -defaultConfigFilePath "$PSScriptRoot/.stravaig/list-contributor-ignore-names.txt" -friendlyName "list of ignored names";
     if ($null -ne $IgnoredNamesPath)
     {
         $ignoredNames = Get-Content -Path $IgnoredNamesPath;
@@ -156,8 +156,8 @@ function Get-InitialContributors($AkaFilePath)
     }
     catch
     {
-        # For some reason it isn't stopping the script when erroring with 
-        # -ErrorAction Stop in the ConvertFrom-Json 
+        # For some reason it isn't stopping the script when erroring with
+        # -ErrorAction Stop in the ConvertFrom-Json
         throw $_
     }
 
@@ -218,7 +218,7 @@ function Get-InitialContributors($AkaFilePath)
 $contributors = Get-InitialContributors -AkaFilePath $AkaFilePath;
 $ignoredNamesList = Get-IgnoredNamesList -IgnoredNamesPath $IgnoredNamesPath -AkaContributors $contributors
 $ignoredEmailsList = Get-IgnoredEmailsList -IgnoredEmailsPath $IgnoredEmailsPath -AkaContributors $contributors
-& git log --format="\`"%ai\`",\`"%an\`",\`"%ae\`",\`"%H\`"" > raw-contributors.csv
+& git log --format="`"%ai`",`"%an`",`"%ae`",`"%H`"" > raw-contributors.csv
 $commits = Import-Csv raw-contributors.csv -Header Time,Name,Email,Hash | Sort-Object Time;
 Remove-Item .\raw-contributors.csv
 
@@ -241,9 +241,9 @@ for($i = 0; $i -lt $totalCommits; $i++)
         $contributor = New-Object -TypeName PSObject -Property @{
             Names=@($nextCommit.Name);
             PrimaryName = $nextCommit.Name;
-            Emails=@($nextCommit.Email); 
-            FirstCommit=$commitTime; 
-            LastCommit=$commitTime; 
+            Emails=@($nextCommit.Email);
+            FirstCommit=$commitTime;
+            LastCommit=$commitTime;
             CommitCount=1
         };
         $contributors += $contributor;
@@ -252,13 +252,13 @@ for($i = 0; $i -lt $totalCommits; $i++)
     }
     else
     {
-        if ((-not(Test-IgnoredItem -Item $nextCommit.Email -IgnoredItemsList $ignoredEmailsList)) -and 
+        if ((-not(Test-IgnoredItem -Item $nextCommit.Email -IgnoredItemsList $ignoredEmailsList)) -and
             (-not (Test-Email -Contributor $contributor -CommitterEmail $nextCommit.Email)))
         {
             Write-Verbose "Adding email `"$($nextCommit.Email)`" to $($contributor.PrimaryName) from commit $($nextCommit.Hash)."
             $contributor.Emails += $nextCommit.Email;
         }
-        if ((-not(Test-IgnoredItem -Item $nextCommit.Name -IgnoredItemsList $ignoredNamesList)) -and 
+        if ((-not(Test-IgnoredItem -Item $nextCommit.Name -IgnoredItemsList $ignoredNamesList)) -and
             (-not (Test-Name -Contributor $contributor -CommitterName $nextCommit.Name)))
         {
             Write-Verbose "Adding name `"$($nextCommit.Name)`" to $($contributor.PrimaryName) from commit $($nextCommit.Hash)."
@@ -282,20 +282,20 @@ $contributors = $contributors | Where-Object CommitCount -gt 0
 $isDescending = $SortDirection -eq "Descending";
 Switch($SortOrder)
 {
-    "Name" { 
+    "Name" {
         $contributors = $contributors | Sort-Object PrimaryName -Descending:$isDescending;
         $textOrderBy = "contributor name";
     }
     "FirstCommit" {
-        $contributors = $contributors | Sort-Object FirstCommit -Descending:$isDescending; 
+        $contributors = $contributors | Sort-Object FirstCommit -Descending:$isDescending;
         $textOrderBy = "first commit date";
     }
     "LastCommit" {
-        $contributors = $contributors | Sort-Object LastCommit -Descending:$isDescending; 
+        $contributors = $contributors | Sort-Object LastCommit -Descending:$isDescending;
         $textOrderBy = "last commit date";
     }
     "CommitCount" {
-        $contributors = $contributors | Sort-Object CommitCount -Descending:$isDescending; 
+        $contributors = $contributors | Sort-Object CommitCount -Descending:$isDescending;
         $textOrderBy = "number of commits";
     }
 }
@@ -331,14 +331,14 @@ foreach($contributor in $contributors)
         $end = $contributor.LastCommit.ToString($TimeFormat);
     }
     else {
-        $end = $contributor.LastCommit.ToString($DateTimeFormat);        
+        $end = $contributor.LastCommit.ToString($DateTimeFormat);
     }
     "**$name**$aka contributed $numCommits $commitMsg" | Out-File $OutputFile -Append -Encoding utf8 -NoNewline
     if ($numCommits -eq 1)
     {
         " on $start." | Out-File $OutputFile -Append -Encoding utf8
     }
-    else 
+    else
     {
         " from $start to $end." | Out-File $OutputFile -Append -Encoding utf8
     }
@@ -348,9 +348,9 @@ foreach($contributor in $contributors)
 "" | Out-File $OutputFile -Append -Encoding utf8
 
 $firstCommit = $commits[0];
-$firstCommitMsg = [DateTime]::ParseExact($firstCommit.Time, "yyyy-MM-dd HH:mm:ss zzz", [CultureInfo]::InvariantCulture).ToString($DateTimeFormat);  
+$firstCommitMsg = [DateTime]::ParseExact($firstCommit.Time, "yyyy-MM-dd HH:mm:ss zzz", [CultureInfo]::InvariantCulture).ToString($DateTimeFormat);
 $lastCommit = $commits[$totalCommits - 1];
-$lastCommitMsg = [DateTime]::ParseExact($lastCommit.Time, "yyyy-MM-dd HH:mm:ss zzz", [CultureInfo]::InvariantCulture).ToString($DateTimeFormat);  
+$lastCommitMsg = [DateTime]::ParseExact($lastCommit.Time, "yyyy-MM-dd HH:mm:ss zzz", [CultureInfo]::InvariantCulture).ToString($DateTimeFormat);
 
 ":octocat: $totalCommits commits in total." | Out-File $OutputFile -Append -Encoding utf8
 "" | Out-File $OutputFile -Append -Encoding utf8
@@ -358,32 +358,3 @@ $lastCommitMsg = [DateTime]::ParseExact($lastCommit.Time, "yyyy-MM-dd HH:mm:ss z
 "" | Out-File $OutputFile -Append -Encoding utf8
 ":date: Until $lastCommitMsg." | Out-File $OutputFile -Append -Encoding utf8
 "" | Out-File $OutputFile -Append -Encoding utf8
-
-$topCommitters = ($contributors | Sort-Object CommitCount -Descending);
-$topCommitter = $topCommitters[0];
-$name = $topCommitter.PrimaryName;
-$commitCount = $topCommitter.CommitCount;
-$percentage = $topCommitter.CommitCount / $totalCommits;
-
-":1st_place_medal: Gold medal to $name with $commitCount commits which represents "+("{0:P2}" -f $percentage)+" of all commits." | Out-File $OutputFile -Append -Encoding utf8
-"" | Out-File $OutputFile -Append -Encoding utf8
-
-$topCommitter = $topCommitters[1];
-if ($null -ne $topCommitter)
-{
-    $name = $topCommitter.PrimaryName;
-    $commitCount = $topCommitter.CommitCount;
-    $percentage = $topCommitter.CommitCount / $totalCommits;
-    ":2nd_place_medal: Silver medal to $name with $commitCount commits which represents "+("{0:P2}" -f $percentage)+" of all commits." | Out-File $OutputFile -Append -Encoding utf8
-    "" | Out-File $OutputFile -Append -Encoding utf8
-}
-
-$topCommitter = $topCommitters[2];
-if ($null -ne $topCommitter)
-{
-    $name = $topCommitter.PrimaryName;
-    $commitCount = $topCommitter.CommitCount;
-    $percentage = $topCommitter.CommitCount / $totalCommits;
-    ":3rd_place_medal: Bronze medal to $name with $commitCount commits which represents "+("{0:P2}" -f $percentage)+" of all commits." | Out-File $OutputFile -Append -Encoding utf8
-    "" | Out-File $OutputFile -Append -Encoding utf8
-}
